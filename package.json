@@ -1,0 +1,30 @@
+{
+  "name": "nodejsapi",
+  "version": "1.0.0",
+  "description": "API Server",
+  "main": "apiServer.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon ./src/apiServer.js"
+  },
+  "author": "Sergej Schmidt",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.20.2",
+    "connect-pg-simple": "^9.0.1",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "express-rate-limit": "^7.1.5",
+    "express-session": "^1.17.3",
+    "helmet": "^7.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "morgan": "^1.10.0",
+    "node-cron": "^3.0.3",
+    "passport": "^0.7.0",
+    "passport-local": "^1.0.0",
+    "pg": "^8.11.3",
+    "sqlite": "^5.1.1",
+    "sqlite3": "^5.1.6"
+  }
+}

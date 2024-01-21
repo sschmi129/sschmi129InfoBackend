@@ -1,0 +1,6 @@
+node_modules
+npm-debug.log
+docker-compose.yml
+*.txt
+swag
+.env

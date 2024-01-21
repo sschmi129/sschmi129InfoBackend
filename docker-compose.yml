@@ -1,0 +1,73 @@
+version: "3.8"
+services:
+  swag:
+    image: lscr.io/linuxserver/swag
+    container_name: swag
+    cap_add:
+      - NET_ADMIN
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Berlin
+      - URL=${URL}
+      - SUBDOMAINS=www
+      - VALIDATION=http
+    volumes:
+      - ./swag/config:/config
+    ports:
+      - 443:443
+      - 80:80
+      - 81:81
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    restart: unless-stopped
+  db:
+    container_name: postgres_container
+    image: postgres:15
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DATABASEUSER} --dbname=${DATABASENAME}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    environment:
+      POSTGRES_USER: ${DATABASEUSER}
+      POSTGRES_PASSWORD: ${DATABASEPASSWORD}
+      POSTGRES_DB: ${DATABASENAME}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgresqlVolume:/var/lib/postgresql/data
+  pgadmin:
+    container_name: pgadmin4_container
+    image: dpage/pgadmin4
+    restart: unless-stopped
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${DATABASEPASSWORD}
+    ports:
+      - "5050:80"
+    volumes:
+      - pgadminVolume:/var/lib/pgadmin
+  sschmi129infobackend:
+    container_name: sschmi129infobackend
+    image: sschmi129infobackend
+    links:
+      - db:localhost
+    environment:
+      - SERVICENAME=db
+      - CORSORIGIN=${CORSORIGIN}
+      - DATABASEUSER=${DATABASEUSER}
+      - DATABASENAME=${DATABASENAME}
+      - DATABASEPASSWORD=${DATABASEPASSWORD}
+      - SESSIONNAME=${SESSIONNAME}
+      - SESSIONSECRET=${SESSIONSECRET}
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+      
+volumes:
+  postgresqlVolume:
+  pgadminVolume:
+  
